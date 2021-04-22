@@ -1,5 +1,7 @@
+from authemail.admin import EmailUserAdmin
 from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Count
 from django.http import JsonResponse
@@ -199,7 +201,8 @@ class TicketAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('<path:object_id>/reply', self.admin_site.admin_view(ReplyTicket.as_view()), name='backend_ticket_reply')
+            path('<path:object_id>/reply', self.admin_site.admin_view(ReplyTicket.as_view()),
+                 name='backend_ticket_reply')
         ]
         return custom_urls + urls
 

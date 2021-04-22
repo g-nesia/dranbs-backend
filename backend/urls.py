@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.urls import path
+from django.urls import path, include
 
 from backend.views import SendResetPasswordLink, ProductsView, CustomAuthToken, UserCreateView, \
     ProfileView, ProductsByBrandView, ImageView, LogoutView, ToggleFollowBrandView, BrandInfoView, \
@@ -8,11 +8,11 @@ from backend.views import SendResetPasswordLink, ProductsView, CustomAuthToken, 
     toggle_follow_board_view, get_total_new_count
 
 urlpatterns = [
-    path('api/sessions', CustomAuthToken.as_view()),
-    path('api/auth/logout', LogoutView.as_view()),
-    path('api/users', UserCreateView.as_view()),
-    path('api/send-reset-password-link', SendResetPasswordLink.as_view()),
-    path('api/reset-password', ResetPassword.as_view()),
+    # path('api/sessions', CustomAuthToken.as_view()),
+    # path('api/auth/logout', LogoutView.as_view()),
+    # path('api/users', UserCreateView.as_view()),
+    # path('api/send-reset-password-link', SendResetPasswordLink.as_view()),
+    # path('api/reset-password', ResetPassword.as_view()),
 
     path('api/products', ProductsView.as_view()),
     path('api/products/<name>', ProductsByBrandView.as_view()),

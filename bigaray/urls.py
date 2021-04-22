@@ -23,6 +23,7 @@ from bigaray.settings import base
 
 urlpatterns = [
     path(os.getenv('SECRET_ADMIN_URL') + 'admin/', admin.site.urls),
+    path('api/auth/', include('authemail.urls')),
     path('', include('backend.urls'))
 ]
 urlpatterns += static(base.STATIC_URL, document_root=base.STATIC_ROOT)

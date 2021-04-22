@@ -36,12 +36,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'authemail',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
-    'crispy_forms',
     'backend',
-    'scraping',
+    # 'scraping',
 ]
 
 # CACHES = {
@@ -136,6 +136,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+AUTH_USER_MODEL = 'authemail.MyUser'
+
 CACHE_MIDDLEWARE_KEY_PREFIX = 'bigaray_'
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
@@ -146,7 +148,5 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 GOOGLE_SIGNIN_CLIENT_ID = "1088245675677-0n50acbl70dsehpdr89f636ucmf1qa37.apps.googleusercontent.com"
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

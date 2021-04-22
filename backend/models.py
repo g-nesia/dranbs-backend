@@ -1,9 +1,8 @@
 import logging
 import os
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import JSONField
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
@@ -17,7 +16,7 @@ class UserProfile(models.Model):
     gender = models.IntegerField(choices=GENDERS, null=True)
     birthday = models.DateField(null=True)
 
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), related_name='profile', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'profile'
@@ -101,14 +100,14 @@ def submission_delete(sender, instance, **kwargs):
 
 class BrandFollower(models.Model):
     brand_name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'brand_followers'
 
 
 class ProductLove(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     class Meta:
@@ -125,7 +124,7 @@ class Board(models.Model):
     type = models.IntegerField(choices=BOARD_TYPES)
     image_filename = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -148,7 +147,7 @@ class Board(models.Model):
 class BoardProduct(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now=True, null=True)
 
@@ -159,7 +158,7 @@ class BoardProduct(models.Model):
 
 class BoardFollower(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'board_follower'
