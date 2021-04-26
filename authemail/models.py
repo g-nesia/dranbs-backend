@@ -52,6 +52,7 @@ class EmailAbstractUser(AbstractBaseUser, PermissionsMixin):
 
     Email and password are required. Other fields are optional.
     """
+    username = models.CharField(_('username'), max_length=255, unique=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('email address'), max_length=255, unique=True)
@@ -79,7 +80,7 @@ class EmailAbstractUser(AbstractBaseUser, PermissionsMixin):
     birthday = models.DateField(null=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'gender', 'birthday']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'gender', 'birthday', 'username']
 
     class Meta:
         verbose_name = _('user')
@@ -154,7 +155,7 @@ def send_multi_format_email(template_prefix, template_ctxt, target_email):
     html_file = 'authemail/%s.html' % template_prefix
 
     subject = render_to_string(subject_file).strip()
-    from_email = settings.EMAIL_FROM
+    from_email = settings.DEFAULT_FROM_EMAIL
     to = target_email
     bcc_email = settings.EMAIL_BCC
     text_content = render_to_string(txt_file, template_ctxt)

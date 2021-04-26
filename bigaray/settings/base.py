@@ -144,6 +144,7 @@ EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', '')
 DEFAULT_FROM_EMAIL = "support@dranbs.com"
+EMAIL_BCC = "support@dranbs.com"
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1

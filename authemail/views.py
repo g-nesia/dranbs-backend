@@ -27,52 +27,35 @@ class Signup(APIView):
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            email = serializer.data['email']
-            password = serializer.data['password']
-            first_name = serializer.data['first_name']
-            last_name = serializer.data['last_name']
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
 
-            must_validate_email = getattr(settings, "AUTH_EMAIL_VERIFICATION", True)
+        must_validate_email = getattr(settings, "AUTH_EMAIL_VERIFICATION", True)
 
-            try:
-                user = get_user_model().objects.get(email=email)
-                if user.is_verified:
-                    content = {'detail': _('Email address already taken.')}
-                    return Response(content, status=status.HTTP_400_BAD_REQUEST)
+        if not must_validate_email:
+            user.is_verified = True
+            send_multi_format_email('welcome_email',
+                                    {'email': user.email, },
+                                    target_email=user.email)
+        user.save()
 
-                try:
-                    # Delete old signup codes
-                    signup_code = SignupCode.objects.get(user=user)
-                    signup_code.delete()
-                except SignupCode.DoesNotExist:
-                    pass
+        if must_validate_email:
+            # Create and associate signup code
+            ipaddr = self.request.META.get('REMOTE_ADDR', '0.0.0.0')
+            signup_code = SignupCode.objects.create_signup_code(user, ipaddr)
+            signup_code.send_signup_email()
 
-            except get_user_model().DoesNotExist:
-                user = get_user_model().objects.create_user(email=email)
+        serializer = UserSerializer(user)
 
-            # Set user fields provided
-            user.set_password(password)
-            user.first_name = first_name
-            user.last_name = last_name
-            if not must_validate_email:
-                user.is_verified = True
-                send_multi_format_email('welcome_email',
-                                        {'email': user.email, },
-                                        target_email=user.email)
-            user.save()
+        token, created = Token.objects.get_or_create(user=user)
+        content = {
+            'user': serializer.data,
+            'meta': {
+                'token': token.key
+            }
+        }
 
-            if must_validate_email:
-                # Create and associate signup code
-                ipaddr = self.request.META.get('REMOTE_ADDR', '0.0.0.0')
-                signup_code = SignupCode.objects.create_signup_code(user, ipaddr)
-                signup_code.send_signup_email()
-
-            content = {'email': email, 'first_name': first_name,
-                       'last_name': last_name}
-            return Response(content, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(content, status=status.HTTP_201_CREATED)
 
 
 class SignupVerify(APIView):

@@ -72,9 +72,9 @@ class EmailUserAdmin(UserAdmin):
     form = EmailUserChangeForm
     add_form = EmailUserCreationForm
     inlines = [SignupCodeInline, EmailChangeCodeInline, PasswordResetCodeInline]
-    list_display = ('email', 'is_verified', 'first_name', 'last_name',
+    list_display = ('id', 'email', 'username', 'is_verified', 'first_name', 'last_name',
                     'is_staff')
-    search_fields = ('first_name', 'last_name', 'email')
+    search_fields = ('first_name', 'last_name', 'email', 'username',)
     ordering = ('email',)
 
 
